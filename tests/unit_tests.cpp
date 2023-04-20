@@ -10,7 +10,6 @@
 #include <spdlog/spdlog.h>
 
 
-//------------------------------------------------------------------------------
 
 struct listener : Catch::EventListenerBase
 {
@@ -30,6 +29,14 @@ std::string testfiles_dir = "../tests/files";
 //------------------------------------------------------------------------------
 
 TEST_CASE( "Dummy test", "[small]" )
+{
+    REQUIRE(true);
+}
+
+//------------------------------------------------------------------------------
+
+#include <parser.hpp>
+TEST_CASE( "Dummy test afm lib", "[small]" )
 {
     REQUIRE(true);
 }
