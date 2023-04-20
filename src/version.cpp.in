@@ -1,0 +1,23 @@
+//
+//  version.cpp
+//
+
+#include <version.hpp>
+
+std::string rpfbwt::Version::AFM_GIT_BRANCH = "@GIT_BRANCH@";
+std::string rpfbwt::Version::AFM_GIT_COMMIT_HASH = "@GIT_COMMIT_HASH@";
+int rpfbwt::Version::AFM_MAJOR = @VERSION_MAJOR@;
+int rpfbwt::Version::AFM_MINOR = @VERSION_MINOR@;
+int rpfbwt::Version::AFM_PATCH = @VERSION_PATCH@;
+
+void rpfbwt::Version::print()
+{
+    std::cout
+    << AFM_GIT_BRANCH << ":"
+    << AFM_GIT_COMMIT_HASH << ":"
+    << "-"
+    << AFM_MAJOR << "." << AFM_MINOR << "." << AFM_PATCH
+    << std::endl;
+    
+    exit(0);
+}
