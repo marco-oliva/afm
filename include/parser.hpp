@@ -16,14 +16,16 @@ class StringParser
 private:
     
     vcfbwt::pfp::Params params;
-    const vcfbwt::pfp::Dictionary<std::uint8_t>& dictionary;
+    vcfbwt::pfp::Dictionary<vcfbwt::char_type>& dictionary;
     
 public:
     
     StringParser() = delete;
-    StringParser(const vcfbwt::pfp::Params& pfp_params, const vcfbwt::pfp::Dictionary<std::uint8_t>& d);
+    StringParser(const vcfbwt::pfp::Params& pfp_params, vcfbwt::pfp::Dictionary<vcfbwt::char_type>& d)
+    : params(pfp_params), dictionary(d)
+    { }
     
-    void operator()(const std::string& s, std::vector<vcfbwt::short_type>& parse) const;
+    void operator()(const std::vector<vcfbwt::char_type>& s, std::vector<std::pair<vcfbwt::size_type, std::size_t>>& parse);
 };
 
 }
