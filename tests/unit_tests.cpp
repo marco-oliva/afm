@@ -1,8 +1,6 @@
 //
 //  unit_tests.cpp
 //
-//  Copyright 2022 Marco Oliva. All rights reserved.
-//
 
 #include <iostream>
 
