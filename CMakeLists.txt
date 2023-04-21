@@ -12,6 +12,8 @@ option(ENABLE_MALLOC_COUNT "Keep track of allocations with malloc_count."   OFF)
 option(ENABLE_MIMALLOC "Use mimalloc if installed."                         OFF)
 option(BUILD_TESTS "Build unit test."                                       OFF)
 option(BUILD_BENCHMARKS "Build benchmarks."                                 OFF)
+option(HTSlib_HIPERGATOR "Use hipergator default location for htslib."      OFF)
+option(HTSlib_CUSTOM "Use custom location for htslib."                      OFF)
 
 ################################################################################
 # Set a default build type if none was specified
@@ -68,34 +70,50 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${BUILD_TYPE_FLAGS}")
 
 include(FetchContent)
 
-# sdsl
-FetchContent_Declare(
-        sdsl
-        GIT_REPOSITORY https://github.com/simongog/sdsl-lite
-)
-FetchContent_GetProperties(sdsl)
-if(NOT sdsl_POPULATED)
-    FetchContent_Populate(sdsl)
-    set(GENERATE_DOC OFF CACHE BOOL "Do not generate doxygen for sdsl-lite")
-    add_subdirectory(${sdsl_SOURCE_DIR} ${sdsl_BINARY_DIR} EXCLUDE_FROM_ALL)
+# HTS
+if(HTSlib_HIPERGATOR)
+    set(HTSlib_INCLUDE_DIRS "/apps/htslib/1.15/include/htslib")
+    set(HTSlib_LIBRARIES "/apps/htslib/1.15/lib/libhts.a")
+    set(LIBLZMA_LIBRARIES "/apps/cmake/3.21.3/lib/liblzma.so")
+    set(BZIP2_LIBRARIES "/apps/cmake/3.21.3/lib/libbz2.so")
+    set(ZLIB_LIBRARIES "/apps/cmake/3.21.3/lib/libz.so")
+    set(CURL_LIBRARIES "/apps/cmake/3.21.3/lib/libcurl.so")
+    set(CRYPTO_LIBRARIES "/apps/cmake/3.21.3/lib/libcrypto.so")
+    set(HPG_INCLUDES "/apps/cmake/3.21.3/include")
+    set(HTSlib_INCLUDE_DIRS ${HTSlib_INCLUDE_DIRS} ${HPG_INCLUDES})
+    set(HTSlib_LIBRARIES ${HTSlib_LIBRARIES} ${LIBLZMA_LIBRARIES} ${BZIP2_LIBRARIES} ${ZLIB_LIBRARIES} ${CURL_LIBRARIES} ${CRYPTO_LIBRARIES})
+    include_directories(${HTSlib_INCLUDE_DIRS})
+    message(STATUS "HTSlib: ${HTSlib_LIBRARIES}")
+elseif(HTSlib_CUSTOM)
+    set(HTSlib_INCLUDE_DIRS "")
+    set(HTSlib_LIBRARIES "")
+    set(LIBLZMA_LIBRARIES "")
+    set(BZIP2_LIBRARIES "")
+    set(ZLIB_LIBRARIES "")
+    set(CURL_LIBRARIES "")
+    set(HTSlib_LIBRARIES ${HTSlib_LIBRARIES} ${LIBLZMA_LIBRARIES} ${BZIP2_LIBRARIES} ${ZLIB_LIBRARIES} ${CURL_LIBRARIES})
+    include_directories(${HTSlib_INCLUDE_DIRS})
+    message(STATUS "HTSlib: ${HTSlib_LIBRARIES}")
+else()
+    list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+    find_package(HTSlib REQUIRED)
+    if(HTSlib_FOUND)
+        include_directories(${HTSlib_INCLUDE_DIRS})
+        message(STATUS "HTSlib: ${HTSlib_LIBRARIES}")
+    endif()
 endif()
 
-# divsuffsort
+# pfp
 FetchContent_Declare(
-        divsufsort
-        GIT_REPOSITORY https://github.com/simongog/libdivsufsort.git
-        GIT_TAG        2.0.1
+        pfp
+        GIT_REPOSITORY https://github.com/marco-oliva/pfp.git
+        GIT_TAG        test_out_contigs_info
 )
-FetchContent_GetProperties(divsufsort)
-if(NOT divsufsort_POPULATED)
-    FetchContent_Populate(divsufsort)
-    set(BUILD_SHARED_LIBS OFF CACHE BOOL "Do not build a shared library for libdivsufsort")
-    set(BUILD_EXAMPLES OFF CACHE BOOL "Do not build libdivsufsort example")
-    set(BUILD_DIVSUFSORT64 ON CACHE BOOL "Build libdivsufsort in 64-bits mode")
-    add_subdirectory(${divsufsort_SOURCE_DIR} ${divsufsort_BINARY_DIR}  EXCLUDE_FROM_ALL)
-    target_include_directories(divsufsort PUBLIC "${divsufsort_BINARY_DIR}/include")
-    target_include_directories(divsufsort64 PUBLIC "${divsufsort_BINARY_DIR}/include")
+FetchContent_GetProperties(pfp)
+if(NOT pfp_POPULATED)
+    FetchContent_MakeAvailable(pfp)
 endif()
+include_directories(${pfp_SOURCE_DIR}/include)
 
 # malloc count
 FetchContent_Declare(
@@ -107,7 +125,7 @@ FetchContent_GetProperties(malloc_count)
 if(NOT malloc_count_POPULATED)
     FetchContent_Populate(malloc_count)
     add_library(malloc_count OBJECT ${malloc_count_SOURCE_DIR}/malloc_count.c ${malloc_count_SOURCE_DIR}/malloc_count.h)
-    target_include_directories(malloc_count PUBLIC  "${malloc_count_SOURCE_DIR}")
+    target_include_directories(malloc_count PUBLIC "${malloc_count_SOURCE_DIR}")
     target_link_libraries(malloc_count dl)
 endif()
 
@@ -121,17 +139,6 @@ FetchContent_Declare(
 FetchContent_GetProperties(Catch2)
 if (NOT Catch2_POPULATED AND (BUILD_TESTS OR ${CMAKE_BUILD_TYPE} MATCHES "Debug"))
     FetchContent_MakeAvailable(Catch2)
-endif()
-
-# Hayai Benchmarks
-FetchContent_Declare(
-        hayai
-        GIT_REPOSITORY https://github.com/nickbruun/hayai.git
-        GIT_TAG        v1.0.2
-)
-FetchContent_GetProperties(hayai)
-if(NOT hayai_POPULATED)
-    FetchContent_Populate(hayai)
 endif()
 
 # SPDLOG
@@ -158,6 +165,53 @@ if(NOT cli11_POPULATED)
 endif()
 include_directories(${cli11_SOURCE_DIR}/include)
 
+# mio mmap
+FetchContent_Declare(
+        mio
+        GIT_REPOSITORY https://github.com/mandreyel/mio.git
+)
+FetchContent_GetProperties(mio)
+if(NOT mio_POPULATED)
+    FetchContent_Populate(mio)
+endif()
+include_directories(${mio_SOURCE_DIR}/single_include)
+
+# Zstr
+FetchContent_Declare(
+        zstr
+        GIT_REPOSITORY https://github.com/mateidavid/zstr.git
+        GIT_TAG        v1.0.6
+)
+FetchContent_GetProperties(zstr)
+if(NOT zstr_POPULATED)
+    FetchContent_Populate(zstr)
+endif()
+include_directories(${zstr_SOURCE_DIR}/src)
+
+# Murmur Hash
+FetchContent_Declare(
+        smhasher
+        GIT_REPOSITORY https://github.com/aappleby/smhasher.git
+)
+FetchContent_GetProperties(smhasher)
+if(NOT smhasher_POPULATED)
+    FetchContent_Populate(smhasher)
+endif()
+include_directories(${smhasher_SOURCE_DIR}/src)
+set(MURMUR_SOURCES ${smhasher_SOURCE_DIR}/src/MurmurHash3.cpp)
+
+# kseq
+FetchContent_Declare(
+        kseq
+        GIT_REPOSITORY https://github.com/lh3/seqtk.git
+        GIT_TAG        v1.3
+)
+FetchContent_GetProperties(kseq)
+if(NOT kseq_POPULATED)
+    FetchContent_Populate(kseq)
+endif()
+include_directories(${kseq_SOURCE_DIR})
+
 # Openmp
 find_package(OpenMP)
 if(OpenMP_FOUND OR OPENMP_FOUND)
@@ -168,22 +222,28 @@ if(OpenMP_FOUND OR OPENMP_FOUND)
 elseif(APPLE AND EXISTS "/opt/local/lib/libomp")
     # official Apple compiler with macports' libomp
     message(STATUS "HAVE_OPENMP: OpenMP[MacPorts]")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Xpreprocessor -fopenmp -I/opt/local/include/libomp")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xpreprocessor -fopenmp -I/opt/local/include/libomp")
+    set(CMAKE_C_FLAGS
+            "${CMAKE_C_FLAGS} -Xpreprocessor -fopenmp -I/opt/local/include/libomp")
+    set(CMAKE_CXX_FLAGS
+            "${CMAKE_CXX_FLAGS} -Xpreprocessor -fopenmp -I/opt/local/include/libomp")
     set(OMP_LIBRARIES "-L/opt/local/lib/libomp -lomp")
 elseif(APPLE AND EXISTS "/usr/local/opt/libomp")
     # official Apple compiler with homebrew's kegg libomp
     message(STATUS "HAVE_OPENMP: OpenMP[Homebrew kegg]")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include")
+    set(CMAKE_C_FLAGS
+            "${CMAKE_C_FLAGS} -Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include")
+    set(CMAKE_CXX_FLAGS
+            "${CMAKE_CXX_FLAGS} -Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include")
     set(OMP_LIBRARIES "-L/usr/local/opt/libomp/lib -lomp")
 elseif(APPLE AND EXISTS "/usr/local/lib/libomp.dylib")
     # official Apple compiler with homebrew's libomp
     message(STATUS "HAVE_OPENMP: OpenMP[Homebrew]")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Xpreprocessor -fopenmp")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xpreprocessor -fopenmp")
+    set(CMAKE_C_FLAGS
+            "${CMAKE_C_FLAGS} -Xpreprocessor -fopenmp")
+    set(CMAKE_CXX_FLAGS
+            "${CMAKE_CXX_FLAGS} -Xpreprocessor -fopenmp")
     set(OMP_LIBRARIES "-L/usr/local/lib -lomp")
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux" AND EXISTS  "/usr/local/lib64/libgomp.a")
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux" AND EXISTS "/usr/local/lib64/libgomp.a")
     # custom static openmp for official linux builds
     message(STATUS "HAVE_OPENMP: OpenMP[static]")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Xpreprocessor -fopenmp")
@@ -191,80 +251,6 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux" AND EXISTS  "/usr/local/lib64/libgom
     set(OMP_LIBRARIES "/usr/local/lib64/libgomp.a")
 else()
     message(STATUS "HAVE_OPENMP: NOT FOUND")
-endif()
-
-FetchContent_Declare(
-        kseq
-        GIT_REPOSITORY https://github.com/lh3/seqtk.git
-        GIT_TAG        v1.3
-)
-if(NOT kseq_POPULATED)
-    FetchContent_Populate(kseq)
-endif()
-include_directories(${kseq_SOURCE_DIR})
-
-# MiMalloc
-if (ENABLE_MIMALLOC)
-    set(MI_BUILD_STATIC OFF)
-    set(MI_BUILD_OBJECT OFF)
-    set(MI_BUILD_TESTS  OFF)
-    FetchContent_Declare(
-            mimalloc
-            GIT_REPOSITORY https://github.com/microsoft/mimalloc.git
-            GIT_TAG        v2.0.9
-    )
-    FetchContent_GetProperties(mimalloc)
-    if (NOT mimalloc_POPULATED)
-        FetchContent_MakeAvailable(mimalloc)
-        message(STATUS "Building mimalloc. It will be dynamically linked.")
-    endif()
-    set(MIMALLOC_D_LIB mimalloc)
-endif()
-
-################################################################################
-# Lib
-
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_BINARY_DIR}/generated)
-
-file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/*.cpp)
-
-if (ENABLE_MIMALLOC AND ENABLE_MALLOC_COUNT)
-    message(STATUS "mimalloc enabled, disabling malloc count")
-    set(ENABLE_MALLOC_COUNT FALSE)
-endif()
-
-if (ENABLE_MALLOC_COUNT)
-    message(STATUS "Using malloc_count")
-    set(MALLOC_COUNT_LIBRARIES malloc_count)
-else()
-    set(MALLOC_COUNT_LIBRARIES "")
-endif()
-
-set(AFM_LIBS ${OMP_LIBRARIES} ${MALLOC_COUNT_LIBRARIES}
-${MIMALLOC_D_LIB})
-
-################################################################################
-# Tests
-
-if (BUILD_TESTS OR ${CMAKE_BUILD_TYPE} MATCHES "Debug")
-    message(STATUS "Building unit tests")
-
-    add_executable(afm_unit_tests tests/unit_tests.cpp)
-    target_link_libraries(afm_unit_tests Catch2::Catch2 sdsl divsufsort divsufsort64 rlestring ${AFM_LIBS})
-
-    enable_testing()
-    add_test(NAME afm_unit_tests COMMAND afm_unit_tests)
-endif()
-
-################################################################################
-# Benchmarks
-
-if (BUILD_BENCHMARKS OR ${CMAKE_BUILD_TYPE} MATCHES "Debug")
-    message(STATUS "Building benchmarks")
-
-    add_executable(afm_benchmarks benchmarks/benchmarks.cpp)
-    target_link_libraries(afm_benchmarks hayai sdsl divsufsort divsufsort64 rlestring ${AFM_LIBS})
 endif()
 
 # gsacak
@@ -312,14 +298,85 @@ if(NOT divsufsort_POPULATED)
     target_include_directories(divsufsort64 PUBLIC "${divsufsort_BINARY_DIR}/include")
 endif()
 
-add_subdirectory(src)
+# MiMalloc
+if (ENABLE_MIMALLOC)
+    set(MI_BUILD_STATIC OFF)
+    set(MI_BUILD_OBJECT OFF)
+    set(MI_BUILD_TESTS  OFF)
+    FetchContent_Declare(
+            mimalloc
+            GIT_REPOSITORY https://github.com/microsoft/mimalloc.git
+            GIT_TAG        v2.0.9
+    )
+    FetchContent_GetProperties(mimalloc)
+    if (NOT mimalloc_POPULATED)
+        FetchContent_MakeAvailable(mimalloc)
+        message(STATUS "Building mimalloc. It will be dynamically linked.")
+        set(MIMALLOC_D_LIB mimalloc)
+    endif()
+endif()
+
+################################################################################
+# Lib
+
+include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_BINARY_DIR}/generated)
+
+file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/*.cpp)
+
+# 32 and 64 bits parse
+add_library(afm ${SOURCES} ${SOURCES_GENERATED} ${MURMUR_SOURCES})
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    set(VCF_LIB_DEPS ${HTSlib_LIBRARIES} dl pthread ssl crypto)
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set(VCF_LIB_DEPS ${HTSlib_LIBRARIES} dl pthread)
+endif()
+
+if (ENABLE_MIMALLOC AND ENABLE_MALLOC_COUNT)
+    message(STATUS "mimalloc enabled, disabling malloc count")
+    set(ENABLE_MALLOC_COUNT FALSE)
+endif()
+
+if (ENABLE_MALLOC_COUNT)
+    message(STATUS "Using malloc_count")
+    set(MALLOC_COUNT_LIBRARIES malloc_count)
+else()
+    set(MALLOC_COUNT_LIBRARIES "")
+endif()
+
+set(AFM_LIBS ${OMP_LIBRARIES} ${MALLOC_COUNT_LIBRARIES} ${MIMALLOC_D_LIB} ${VCF_LIB_DEPS})
+
+################################################################################
+# Tests
+
+if (BUILD_TESTS OR ${CMAKE_BUILD_TYPE} MATCHES "Debug")
+    message(STATUS "Building unit tests")
+
+    add_executable(afm_unit_tests tests/unit_tests.cpp)
+    target_link_libraries(afm_unit_tests afm pfp Catch2::Catch2 sdsl divsufsort divsufsort64 ${AFM_LIBS})
+
+    enable_testing()
+    add_test(NAME afm_unit_tests COMMAND afm_unit_tests)
+endif()
+
+################################################################################
+# Benchmarks
+
+if (BUILD_BENCHMARKS OR ${CMAKE_BUILD_TYPE} MATCHES "Debug")
+    message(STATUS "Building benchmarks")
+
+    add_executable(afm_benchmarks benchmarks/benchmarks.cpp)
+    target_link_libraries(afm_benchmarks afm pfp hayai sdsl divsufsort divsufsort64 ${AFM_LIBS})
+endif()
+
 ################################################################################
 # Targets
 
 file(GLOB SOURCES_GENERATED ${PROJECT_BINARY_DIR}/generated/*.cpp)
 
-add_executable(afm afm.cpp ${SOURCES_GENERATED} include/fmi.hpp src/fmi.cpp include/fmi.hpp)
-target_link_libraries(afm dl sdsl divsufsort divsufsort64 ${AFM_LIBS})
+add_executable(afmt afm.cpp ${SOURCES_GENERATED})
+target_link_libraries(afmt dl afm pfp sdsl divsufsort divsufsort64 ${AFM_LIBS})
 
 ################################################################################
 # Install
