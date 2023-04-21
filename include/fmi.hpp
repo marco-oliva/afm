@@ -1,48 +1,35 @@
 //
-// Created by hongy on 4/20/2023.
+// fmi.hpp
 //
 
-#ifndef AFM_FMI_HPP
-#define AFM_FMI_HPP
+#ifndef fmi_hpp
+#define fmi_hpp
 
 #include <iostream>
 #include <vector>
 #include <sdsl/suffix_arrays.hpp>
-using namespace std;
-using namespace sdsl;
 
-template<typename T>
-class fmi {
-
-public:
-
-    virtual void ComputeFmi(const std::vector<T>& s) = 0;
-    virtual size_t count(const T* pattern_begin, const T* pattern_end) const = 0;
-    virtual sdsl::int_vector<64> locate(const T* pattern_begin, const T* pattern_end) const = 0;
-
-
-};
-
-template<typename T>
-class List : public fmi<T>{
+template<typename data_type>
+class fmi
+{
 private:
-    csa_wt<> fm_index;
+    sdsl::csa_wt<> fm_index;
 
 public:
-    void ComputeFmi(const std::vector<T>& s){
-        string str(s.begin(),s.end());
-        construct_im(fm_index, str, 1);
+    fmi(const std::vector<data_type>& input)
+    {
+        construct_im(fm_index, input, sizeof(data_type));
     }
-
-    size_t count(const T* pattern_begin, const T* pattern_end) const override {
+    
+    std::size_t count(const data_type* pattern_begin, const data_type* pattern_end) const
+    {
         return sdsl::count(fm_index, pattern_begin, pattern_end);
     }
-
-    sdsl::int_vector<64> locate(const T* pattern_begin, const T* pattern_end) const override {
-
-        auto locations = sdsl::locate(fm_index, pattern_begin, pattern_end);
-        return locations;
+    
+    sdsl::int_vector<64> locate(const data_type* pattern_begin, const data_type* pattern_end) const
+    {
+        return sdsl::locate(fm_index, pattern_begin, pattern_end);
     }
 };
 
-#endif //AFM_FMI_HPP
+#endif
