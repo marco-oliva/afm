@@ -17,21 +17,31 @@ class fmi {
 public:
 
     virtual void ComputeFmi(const std::vector<T>& s) = 0;
-//    void ComputeFmi(const std::vector<T>& s){
-//        csa_wt<> fm_index;
-//        construct_im(fm_index, s, 1);
-//    }
+    virtual size_t count(const T* pattern_begin, const T* pattern_end) const = 0;
+    virtual sdsl::int_vector<64> locate(const T* pattern_begin, const T* pattern_end) const = 0;
+
 
 };
 
 template<typename T>
 class List : public fmi<T>{
+private:
+    csa_wt<> fm_index;
+
 public:
     void ComputeFmi(const std::vector<T>& s){
         string str(s.begin(),s.end());
-        csa_wt<> fm_index;
         construct_im(fm_index, str, 1);
-        cout<<"fm index: "<<fm_index<<endl;
+    }
+
+    size_t count(const T* pattern_begin, const T* pattern_end) const override {
+        return sdsl::count(fm_index, pattern_begin, pattern_end);
+    }
+
+    sdsl::int_vector<64> locate(const T* pattern_begin, const T* pattern_end) const override {
+
+        auto locations = sdsl::locate(fm_index, pattern_begin, pattern_end);
+        return locations;
     }
 };
 

@@ -103,10 +103,11 @@ TEST_CASE( "Test Parser", "[small]" )
 TEST_CASE("Test FM_Index", "[small]")
 {
     List<vcfbwt::char_type> fmi;
-    vector<vcfbwt::char_type> rs = random_string(10000);
-    cout<<"string: "<<rs<<endl;
-    fmi.ComputeFmi(rs);
-    REQUIRE(true);
+    vector<vcfbwt::char_type> s = {'A', 'C', 'G', 'T', 'T', 'C', 'C', 'A', 'A', 'C', 'G', 'T', 'A', 'T', 'A', 'C', 'G', 'G', 'G', 'T'};
+    fmi.ComputeFmi(s);
+
+    const vcfbwt::char_type pattern1[] = "G";
+    REQUIRE(fmi.count(pattern1, pattern1+1) == 5);
 }
 //------------------------------------------------------------------------------
 
