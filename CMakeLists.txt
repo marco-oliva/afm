@@ -380,14 +380,6 @@ add_executable(afmt afm.cpp ${SOURCES_GENERATED})
 target_link_libraries(afmt dl afm pfp sdsl divsufsort divsufsort64 ${AFM_LIBS})
 
 ################################################################################
-# add sdsl to fmi
-add_library(fmi OBJECT include/fmi.hpp)
-include_directories(${sdsl_SOURCE_DIR}/include)
-target_include_directories(divsufsort PUBLIC "${divsufsort_SOURCE_DIR}/include")
-
-target_link_libraries(fmi sdsl divsufsort divsufsort64 ${AFM_LIBS})
-
-################################################################################
 # Install
 
 install(TARGETS afm)
