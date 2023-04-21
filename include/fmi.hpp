@@ -19,7 +19,7 @@ private:
     sdsl::csa_wt<> fm_index;
 
 public:
-    fmi(const std::vector<data_type>& input)
+    fmi(const sdsl::int_vector<sizeof(data_type) * 8>& input)
     {
         construct_im(fm_index, input, sizeof(data_type));
     }
