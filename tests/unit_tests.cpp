@@ -98,6 +98,13 @@ TEST_CASE( "Test Parser", "[small]" )
     REQUIRE(all_good);
 }
 
+
+#include <fmi.hpp>
+TEST_CASE("Test FM_Index", "[small]")
+{
+std::size_t random_string_length = 10000;
+fmi::fmi::ComputeFmi(s);
+}
 //------------------------------------------------------------------------------
 
 int main( int argc, char* argv[] )

@@ -12,7 +12,7 @@ option(ENABLE_MALLOC_COUNT "Keep track of allocations with malloc_count."   OFF)
 option(ENABLE_MIMALLOC "Use mimalloc if installed."                         OFF)
 option(BUILD_TESTS "Build unit test."                                       OFF)
 option(BUILD_BENCHMARKS "Build benchmarks."                                 OFF)
-option(HTSlib_HIPERGATOR "Use hipergator default location for htslib."      OFF)
+option(HTSlib_HIPERGATOR "Use hipergator default location for htslib."      ON)
 option(HTSlib_CUSTOM "Use custom location for htslib."                      OFF)
 
 ################################################################################
@@ -71,6 +71,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${BUILD_TYPE_FLAGS}")
 include(FetchContent)
 
 # HTS
+message(HTSlib_HIPERGATOR)
 if(HTSlib_HIPERGATOR)
     set(HTSlib_INCLUDE_DIRS "/apps/htslib/1.15/include/htslib")
     set(HTSlib_LIBRARIES "/apps/htslib/1.15/lib/libhts.a")
@@ -198,7 +199,7 @@ if(NOT smhasher_POPULATED)
     FetchContent_Populate(smhasher)
 endif()
 include_directories(${smhasher_SOURCE_DIR}/src)
-set(MURMUR_SOURCES ${smhasher_SOURCE_DIR}/src/MurmurHash3.cpp)
+set(MURMUR_SOURCES ${smhasher_SOURCE_DIR}/src/MurmurHash3.cpp src/fmi.cpp include/fmi.hpp)
 
 # kseq
 FetchContent_Declare(
@@ -377,6 +378,14 @@ file(GLOB SOURCES_GENERATED ${PROJECT_BINARY_DIR}/generated/*.cpp)
 
 add_executable(afmt afm.cpp ${SOURCES_GENERATED})
 target_link_libraries(afmt dl afm pfp sdsl divsufsort divsufsort64 ${AFM_LIBS})
+
+################################################################################
+# add sdsl to fmi
+add_library(fmi OBJECT include/fmi.hpp)
+include_directories(${sdsl_SOURCE_DIR}/include)
+target_include_directories(divsufsort PUBLIC "${divsufsort_SOURCE_DIR}/include")
+
+target_link_libraries(fmi sdsl divsufsort divsufsort64 ${AFM_LIBS})
 
 ################################################################################
 # Install
