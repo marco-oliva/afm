@@ -12,7 +12,7 @@ option(ENABLE_MALLOC_COUNT "Keep track of allocations with malloc_count."   OFF)
 option(ENABLE_MIMALLOC "Use mimalloc if installed."                         OFF)
 option(BUILD_TESTS "Build unit test."                                       OFF)
 option(BUILD_BENCHMARKS "Build benchmarks."                                 OFF)
-option(HTSlib_HIPERGATOR "Use hipergator default location for htslib."      ON)
+option(HTSlib_HIPERGATOR "Use hipergator default location for htslib."      OFF)
 option(HTSlib_CUSTOM "Use custom location for htslib."                      OFF)
 
 ################################################################################
@@ -199,7 +199,7 @@ if(NOT smhasher_POPULATED)
     FetchContent_Populate(smhasher)
 endif()
 include_directories(${smhasher_SOURCE_DIR}/src)
-set(MURMUR_SOURCES ${smhasher_SOURCE_DIR}/src/MurmurHash3.cpp src/fmi.cpp include/fmi.hpp)
+set(MURMUR_SOURCES ${smhasher_SOURCE_DIR}/src/MurmurHash3.cpp include/fmi.hpp)
 
 # kseq
 FetchContent_Declare(

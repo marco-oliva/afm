@@ -102,8 +102,11 @@ TEST_CASE( "Test Parser", "[small]" )
 #include <fmi.hpp>
 TEST_CASE("Test FM_Index", "[small]")
 {
-std::size_t random_string_length = 10000;
-fmi::fmi::ComputeFmi(s);
+    List<vcfbwt::char_type> fmi;
+    vector<vcfbwt::char_type> rs = random_string(10000);
+    cout<<"string: "<<rs<<endl;
+    fmi.ComputeFmi(rs);
+    REQUIRE(true);
 }
 //------------------------------------------------------------------------------
 

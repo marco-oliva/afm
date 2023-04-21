@@ -9,24 +9,30 @@
 #include <vector>
 #include <sdsl/suffix_arrays.hpp>
 using namespace std;
+using namespace sdsl;
 
 template<typename T>
-namespace fmi
-{
-
 class fmi {
-private:
-    std::vector<vcfbwt::char_type> rs;
 
 public:
 
-    void ComputeFmi(const std::vector<T>& s){
-        csa_wt<> fm_index;
-        construct_im(fm_index, s, 1);
-    }
+    virtual void ComputeFmi(const std::vector<T>& s) = 0;
+//    void ComputeFmi(const std::vector<T>& s){
+//        csa_wt<> fm_index;
+//        construct_im(fm_index, s, 1);
+//    }
 
 };
 
-}
+template<typename T>
+class List : public fmi<T>{
+public:
+    void ComputeFmi(const std::vector<T>& s){
+        string str(s.begin(),s.end());
+        csa_wt<> fm_index;
+        construct_im(fm_index, str, 1);
+        cout<<"fm index: "<<fm_index<<endl;
+    }
+};
 
 #endif //AFM_FMI_HPP
