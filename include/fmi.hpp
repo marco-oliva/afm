@@ -9,6 +9,9 @@
 #include <vector>
 #include <sdsl/suffix_arrays.hpp>
 
+namespace afm
+{
+
 template<typename data_type>
 class fmi
 {
@@ -31,5 +34,7 @@ public:
         return sdsl::locate(fm_index, pattern_begin, pattern_end);
     }
 };
+
+}
 
 #endif
