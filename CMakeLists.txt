@@ -324,7 +324,6 @@ include_directories(${PROJECT_BINARY_DIR}/generated)
 
 file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/*.cpp)
 
-# 32 and 64 bits parse
 add_library(afm ${SOURCES} ${SOURCES_GENERATED} ${MURMUR_SOURCES})
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")

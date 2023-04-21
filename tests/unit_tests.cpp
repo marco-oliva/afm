@@ -99,6 +99,16 @@ TEST_CASE( "Test Parser", "[small]" )
 }
 
 //------------------------------------------------------------------------------
+#include <fmi.hpp>
+
+TEST_CASE( "Test FMI", "[small]" )
+{
+    afm::fmi<vcfbwt::char_type> fmi;
+    REQUIRE(true);
+}
+
+//------------------------------------------------------------------------------
+
 
 int main( int argc, char* argv[] )
 {
