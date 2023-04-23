@@ -354,7 +354,7 @@ if (BUILD_TESTS OR ${CMAKE_BUILD_TYPE} MATCHES "Debug")
     message(STATUS "Building unit tests")
 
     add_executable(afm_unit_tests tests/unit_tests.cpp)
-    target_link_libraries(afm_unit_tests afm pfp Catch2::Catch2 sdsl divsufsort divsufsort64 ${AFM_LIBS})
+    target_link_libraries(afm_unit_tests afm pfp Catch2::Catch2 sdsl divsufsort divsufsort64 gsacak64 ${AFM_LIBS})
 
     enable_testing()
     add_test(NAME afm_unit_tests COMMAND afm_unit_tests)
@@ -367,7 +367,7 @@ if (BUILD_BENCHMARKS OR ${CMAKE_BUILD_TYPE} MATCHES "Debug")
     message(STATUS "Building benchmarks")
 
     add_executable(afm_benchmarks benchmarks/benchmarks.cpp)
-    target_link_libraries(afm_benchmarks afm pfp hayai sdsl divsufsort divsufsort64 ${AFM_LIBS})
+    target_link_libraries(afm_benchmarks afm pfp hayai sdsl divsufsort divsufsort64 gsacak64 ${AFM_LIBS})
 endif()
 
 ################################################################################
@@ -376,7 +376,7 @@ endif()
 file(GLOB SOURCES_GENERATED ${PROJECT_BINARY_DIR}/generated/*.cpp)
 
 add_executable(afmt afm.cpp ${SOURCES_GENERATED})
-target_link_libraries(afmt dl afm pfp sdsl divsufsort divsufsort64 ${AFM_LIBS})
+target_link_libraries(afmt dl afm pfp sdsl divsufsort divsufsort64 gsacak64 ${AFM_LIBS})
 
 ################################################################################
 # Install

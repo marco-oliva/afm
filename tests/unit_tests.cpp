@@ -98,24 +98,29 @@ TEST_CASE( "Test Parser", "[small]" )
     REQUIRE(all_good);
 }
 
-
-#include <fmi.hpp>
-TEST_CASE("Test FM_Index", "[small]")
-{
-    List<vcfbwt::char_type> fmi;
-    vector<vcfbwt::char_type> s = {'A', 'C', 'G', 'T', 'T', 'C', 'C', 'A', 'A', 'C', 'G', 'T', 'A', 'T', 'A', 'C', 'G', 'G', 'G', 'T'};
-    fmi.ComputeFmi(s);
-
-    const vcfbwt::char_type pattern1[] = "G";
-    REQUIRE(fmi.count(pattern1, pattern1+1) == 5);
-}
 //------------------------------------------------------------------------------
 #include <fmi.hpp>
 
-TEST_CASE( "Test FMI", "[small]" )
+TEST_CASE("Test FM_Index", "[small]")
 {
-    afm::fmi<vcfbwt::char_type> fmi;
-    REQUIRE(true);
+    std::vector<vcfbwt::char_type> s = {'A', 'C', 'G', 'T', 'T', 'C', 'C', 'A', 'A', 'C', 'G', 'T', 'A', 'T', 'A', 'C', 'G', 'G', 'G', 'T', '\0'};
+    afm::fmi<vcfbwt::char_type, sdsl::wt_huff<>> fmi(s);
+
+    std::vector<vcfbwt::char_type> p_1 = {'G', 'T'};      REQUIRE(fmi.count(p_1) == 3);
+    std::vector<vcfbwt::char_type> p_2 = {'G'};           REQUIRE(fmi.count(p_2) == 5);
+    std::vector<vcfbwt::char_type> p_3 = {'G', 'T', 'T'}; REQUIRE(fmi.count(p_3) == 1);
+    std::vector<vcfbwt::char_type> p_4 = {'G', 'C'};      REQUIRE(fmi.count(p_4) == 0);
+}
+
+TEST_CASE("Test FM_Index integers", "[small]")
+{
+    std::vector<vcfbwt::size_type> s = {1, 5, 2, 5, 4, 3, 4, 2, 6, 5, 2, 3, 3, 4, 3, 4, 4, 0};
+    afm::fmi<vcfbwt::size_type, afm::pfp_wt_sdsl> fmi(s);
+
+    std::vector<vcfbwt::size_type> p_1 = {5, 2};    REQUIRE(fmi.count(p_1) == 2);
+    std::vector<vcfbwt::size_type> p_2 = {5};       REQUIRE(fmi.count(p_2) == 3);
+    std::vector<vcfbwt::size_type> p_3 = {5, 2, 5}; REQUIRE(fmi.count(p_3) == 1);
+    std::vector<vcfbwt::size_type> p_4 = {5, 3};    REQUIRE(fmi.count(p_4) == 0);
 }
 
 //------------------------------------------------------------------------------
