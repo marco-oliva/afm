@@ -346,6 +346,7 @@ else()
 endif()
 
 set(AFM_LIBS ${OMP_LIBRARIES} ${MALLOC_COUNT_LIBRARIES} ${MIMALLOC_D_LIB} ${VCF_LIB_DEPS})
+target_link_libraries(afm pfp sdsl divsufsort divsufsort64 gsacak64 ${AFM_LIBS})
 
 ################################################################################
 # Tests
@@ -381,7 +382,7 @@ target_link_libraries(afmt dl afm pfp sdsl divsufsort divsufsort64 gsacak64 ${AF
 ################################################################################
 # Install
 
-install(TARGETS afm)
+install(TARGETS afm afmt)
 
 ################################################################################
 # CPack

@@ -86,25 +86,23 @@ private:
     fmi(const fmi& other) = delete;
     fmi& operator=(const fmi& other) = delete;
     
-    std::vector<fmi_long_signed> char_counts_to_C_array(const std::vector<fmi_long_signed>& counts) const
+    void init_C_array(const std::vector<fmi_long_signed>& counts)
     {
-        std::vector<fmi_long_signed> C(counts.size()); // Cumulative sum of counts, as big as the alphabet
+        this->C_array.resize(counts.size() + 1, 0);
         
         // Compute cumulative sum of counts
-        for(fmi_long_signed i = 0; i < C.size(); i++)
+        for(fmi_long_signed i = 0; i < C_array.size(); i++)
         {
-            C[i] = counts[i];
-            if(i > 0) C[i] += C[i-1];
+            C_array.at(i) = counts[i];
+            if(i > 0) { C_array.at(i) += C_array.at(i - 1); }
         }
         
         // Shift C to the right by one because that's how it's defined
-        for(fmi_long_signed i = 256-1; i >= 0; i--)
+        for(fmi_long_signed i = C_array.size() - 1; i >= 0; i--)
         {
-            if(i == 0) C[i] = 0;
-            else C[i] = C[i-1];
+            if(i == 0) { C_array.at(i) = 0; }
+            else { C_array.at(i) = C_array.at(i - 1); }
         }
-        
-        return C;
     }
     
     void init_wt_bwt(const std::vector<data_type>& input)
@@ -112,6 +110,21 @@ private:
         spdlog::error("Wavelet Tree constructor not implemented!");
         std::exit(EXIT_FAILURE);
     }
+    
+    
+    
+    interval get_full_interval() const { return FULL_INTERVAL; };
+    interval get_empty_interval() const { return EMPTY_INTERVAL; };
+    fmi_long_unsigned SA_at(fmi_long_unsigned i) const { return sa[i]; }
+    fmi_long_unsigned C_array_at(data_type c) const { return C_array.at(c); }
+    data_type bwt_at(fmi_long_unsigned i) const { return bwt[i]; }
+    fmi_long_unsigned bwt_rank(fmi_long_unsigned i, data_type c) const { return bwt.rank(i, c); }
+    fmi_long_unsigned size() const { return bwt.size(); }
+    
+public:
+    
+    fmi() = default;
+    explicit fmi(const std::vector<data_type>& input) { construct(input); }
     
     void construct(const std::vector<data_type>& input)
     {
@@ -134,33 +147,19 @@ private:
         tmp_sa.resize(0);
         
         init_wt_bwt(input);
-        
+
         std::vector<fmi_long_signed> char_counts(alphabet_size, 0);
-        for(std::size_t i = 0; i < this->bwt.size(); i++) { char_counts[this->bwt[i]]++; }
-        C_array = char_counts_to_C_array(char_counts);
-        
+        for(std::size_t i = 0; i < this->bwt.size(); i++) { char_counts.at(this->bwt[i])++; }
+        init_C_array(char_counts);
+
         FULL_INTERVAL = {(fmi_long_signed)0, (fmi_long_signed)bwt.size()-1};
     }
-    
-    interval get_full_interval() const { return FULL_INTERVAL; };
-    interval get_empty_interval() const { return EMPTY_INTERVAL; };
-    fmi_long_unsigned SA_at(fmi_long_unsigned i) const { return sa[i]; }
-    fmi_long_unsigned C_array_at(data_type c) const { return C_array.at(c); }
-    data_type bwt_at(fmi_long_unsigned i) const { return bwt[i]; }
-    fmi_long_unsigned bwt_rank(fmi_long_unsigned i, data_type c) const { return bwt.rank(i, c); }
-    fmi_long_unsigned size() const { return bwt.size(); }
-    
-public:
-    
-    fmi() = delete;
-    
-    explicit fmi(const std::vector<data_type>& input) { construct(input); }
     
     interval left_extend(interval I, data_type c) const
     {
         if (I == EMPTY_INTERVAL) { return I; }
         fmi_long_signed r1 = bwt.rank(I.left, c);
-        fmi_long_signed r2 = bwt.rank(I.right + 1,c);
+        fmi_long_signed r2 = bwt.rank(I.right + 1, c);
         interval I_new = {C_array[c] + r1, C_array[c] + r2 - 1};
         if (I_new.left > I_new.right) { return EMPTY_INTERVAL; }
         else { return I_new; }
@@ -216,7 +215,7 @@ void fmi<vcfbwt::size_type, pfp_wt_sdsl>::init_wt_bwt(const std::vector<vcfbwt::
     // create alphabet (phrases)
     std::size_t alphabet_size = *std::max_element(input.begin(), input.end());
     std::vector<vcfbwt::size_type> alphabet(alphabet_size, 0);
-    for (vcfbwt::size_type i = 1; i <= alphabet.size(); i++) { alphabet[i - 1] = i; }
+    for (vcfbwt::size_type i = 0; i < alphabet.size(); i++) { alphabet[i] = i + 1; }
     
     // create BWT and Wavelet Tree over it
     std::vector<vcfbwt::size_type> bwt_tmp(input.size() - 1, 0);

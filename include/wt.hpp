@@ -58,7 +58,7 @@ public:
     pfp_wt_sdsl()
     { }
     
-    pfp_wt_sdsl(const std::vector<uint32_t> & sorted_alphabet, const std::vector<uint32_t> & parse) {
+    pfp_wt_sdsl(const std::vector<uint32_t> & sorted_alphabet, const std::vector<uint32_t> & parse){
         construct(sorted_alphabet, parse);
     }
     
