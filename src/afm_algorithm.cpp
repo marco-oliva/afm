@@ -26,13 +26,13 @@ const std::vector<vcfbwt::size_type>& parse)
     this->fmindex.construct(tmp_input);
 }
 
-std::vector<std::size_t>
+std::vector<afm::fmi_long_unsigned>
 afm::baseline_fmi::locate(const std::vector<vcfbwt::char_type>& pattern) const
 {
     return this->fmindex.locate(pattern);
 }
 
-std::size_t
+afm::fmi_long_unsigned
 afm::baseline_fmi::count(const std::vector<vcfbwt::char_type>& pattern) const
 {
     return this->fmindex.count(pattern);

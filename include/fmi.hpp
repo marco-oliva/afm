@@ -54,13 +54,13 @@ inline void sacak_templated<uint32_t> (const uint32_t* s, gsacak_long_unsigned* 
 namespace afm
 {
 
+typedef uint64_t fmi_long_unsigned;
+typedef int64_t  fmi_long_signed;
+
 template<typename data_type, typename wt_type>
 class fmi
 {
 public:
-    
-    typedef uint64_t fmi_long_unsigned;
-    typedef int64_t  fmi_long_signed;
     
     struct interval
     {

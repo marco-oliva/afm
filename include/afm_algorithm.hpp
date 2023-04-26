@@ -22,8 +22,8 @@ private:
 public:
     baseline_fmi(const vcfbwt::pfp::Params& params, vcfbwt::pfp::Dictionary<vcfbwt::char_type>& dictionary, const std::vector<vcfbwt::size_type>& parse);
     
-    std::size_t count(const std::vector<vcfbwt::char_type>& pattern) const;
-    std::vector<std::size_t> locate(const std::vector<vcfbwt::char_type>& pattern) const;
+    afm::fmi_long_unsigned count(const std::vector<vcfbwt::char_type>& pattern) const;
+    std::vector<afm::fmi_long_unsigned> locate(const std::vector<vcfbwt::char_type>& pattern) const;
 };
 
 class accelerated_fmi
@@ -41,8 +41,8 @@ private:
 public:
     accelerated_fmi(const vcfbwt::pfp::Params& params, vcfbwt::pfp::Dictionary<vcfbwt::char_type>& dictionary, const std::vector<vcfbwt::size_type>& parse);
     
-    std::size_t count(const std::vector<vcfbwt::char_type>& pattern) const;
-    std::vector<std::size_t> locate(const std::vector<vcfbwt::char_type>& pattern) const;
+    std::vector<afm::fmi_long_unsigned> count(const std::vector<vcfbwt::char_type>& pattern) const;
+    std::vector<std::vector<afm::fmi_long_unsigned>> locate(const std::vector<vcfbwt::char_type>& pattern) const;
 };
 
 }
