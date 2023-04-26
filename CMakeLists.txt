@@ -324,8 +324,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_BINARY_DIR}/generated)
 
 file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/*.cpp)
-
-add_library(afm ${SOURCES} ${SOURCES_GENERATED} ${MURMUR_SOURCES})
+set(AFM_SOURCES ${SOURCES} ${SOURCES_GENERATED} ${MURMUR_SOURCES})
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(VCF_LIB_DEPS ${HTSlib_LIBRARIES} dl pthread ssl crypto)
@@ -346,7 +345,6 @@ else()
 endif()
 
 set(AFM_LIBS ${OMP_LIBRARIES} ${MALLOC_COUNT_LIBRARIES} ${MIMALLOC_D_LIB} ${VCF_LIB_DEPS})
-target_link_libraries(afm pfp sdsl divsufsort divsufsort64 gsacak64 ${AFM_LIBS})
 
 ################################################################################
 # Tests
@@ -354,8 +352,8 @@ target_link_libraries(afm pfp sdsl divsufsort divsufsort64 gsacak64 ${AFM_LIBS})
 if (BUILD_TESTS OR ${CMAKE_BUILD_TYPE} MATCHES "Debug")
     message(STATUS "Building unit tests")
 
-    add_executable(afm_unit_tests tests/unit_tests.cpp)
-    target_link_libraries(afm_unit_tests afm pfp Catch2::Catch2 sdsl divsufsort divsufsort64 gsacak64 ${AFM_LIBS})
+    add_executable(afm_unit_tests tests/unit_tests.cpp ${AFM_SOURCES})
+    target_link_libraries(afm_unit_tests pfp Catch2::Catch2 sdsl divsufsort divsufsort64 gsacak64 ${AFM_LIBS})
 
     enable_testing()
     add_test(NAME afm_unit_tests COMMAND afm_unit_tests)
@@ -367,8 +365,8 @@ endif()
 if (BUILD_BENCHMARKS OR ${CMAKE_BUILD_TYPE} MATCHES "Debug")
     message(STATUS "Building benchmarks")
 
-    add_executable(afm_benchmarks benchmarks/benchmarks.cpp)
-    target_link_libraries(afm_benchmarks afm pfp hayai sdsl divsufsort divsufsort64 gsacak64 ${AFM_LIBS})
+    add_executable(afm_benchmarks benchmarks/benchmarks.cpp ${AFM_SOURCES})
+    target_link_libraries(afm_benchmarks pfp hayai sdsl divsufsort divsufsort64 gsacak64 ${AFM_LIBS})
 endif()
 
 ################################################################################
@@ -376,13 +374,13 @@ endif()
 
 file(GLOB SOURCES_GENERATED ${PROJECT_BINARY_DIR}/generated/*.cpp)
 
-add_executable(afmt afm.cpp ${SOURCES_GENERATED})
-target_link_libraries(afmt dl afm pfp sdsl divsufsort divsufsort64 gsacak64 ${AFM_LIBS})
+add_executable(afmt afm.cpp ${AFM_SOURCES})
+target_link_libraries(afmt dl pfp sdsl divsufsort divsufsort64 gsacak64 ${AFM_LIBS})
 
 ################################################################################
 # Install
 
-install(TARGETS afm afmt)
+install(TARGETS afmt)
 
 ################################################################################
 # CPack

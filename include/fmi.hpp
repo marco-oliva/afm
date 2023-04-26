@@ -24,26 +24,26 @@ extern "C" {
 typedef uint64_t gsacak_long_unsigned;
 
 template <typename data_type>
-void sacak_templated(const data_type* s, gsacak_long_unsigned* SA, gsacak_long_unsigned n, gsacak_long_unsigned k = 0)
+inline void sacak_templated(const data_type* s, gsacak_long_unsigned* SA, gsacak_long_unsigned n, gsacak_long_unsigned k = 0)
 {
     // NOP
     spdlog::error("Not executing gsacak, wrong template used."); std::exit(1);
 }
 
 template<>
-void sacak_templated<uint8_t> (const uint8_t* s, gsacak_long_unsigned* SA, gsacak_long_unsigned n, gsacak_long_unsigned k)
+inline void sacak_templated<uint8_t> (const uint8_t* s, gsacak_long_unsigned* SA, gsacak_long_unsigned n, gsacak_long_unsigned k)
 {
     sacak((unsigned char*) s, SA, n);
 };
 
 template<>
-void sacak_templated<char> (const char* s, gsacak_long_unsigned* SA, gsacak_long_unsigned n, gsacak_long_unsigned k)
+inline void sacak_templated<char> (const char* s, gsacak_long_unsigned* SA, gsacak_long_unsigned n, gsacak_long_unsigned k)
 {
     sacak((unsigned char*) s, SA, n);
 };
 
 template<>
-void sacak_templated<uint32_t> (const uint32_t* s, gsacak_long_unsigned* SA, gsacak_long_unsigned n, gsacak_long_unsigned k)
+inline void sacak_templated<uint32_t> (const uint32_t* s, gsacak_long_unsigned* SA, gsacak_long_unsigned n, gsacak_long_unsigned k)
 {
     sacak_int((uint32_t*) s, SA, n, k);
 };
@@ -196,7 +196,7 @@ public:
 };
 
 template<>
-void fmi<vcfbwt::char_type, sdsl::wt_huff<>>::init_wt_bwt(const std::vector<vcfbwt::char_type>& input)
+inline void fmi<vcfbwt::char_type, sdsl::wt_huff<>>::init_wt_bwt(const std::vector<vcfbwt::char_type>& input)
 {
     spdlog::info("Building Wavelet Tree on chars");
     std::vector<vcfbwt::char_type> bwt_tmp(sa.size() + 1, 0); // has to be 0 terminated
@@ -209,7 +209,7 @@ void fmi<vcfbwt::char_type, sdsl::wt_huff<>>::init_wt_bwt(const std::vector<vcfb
 }
 
 template<>
-void fmi<vcfbwt::size_type, pfp_wt_sdsl>::init_wt_bwt(const std::vector<vcfbwt::size_type>& input)
+inline void fmi<vcfbwt::size_type, pfp_wt_sdsl>::init_wt_bwt(const std::vector<vcfbwt::size_type>& input)
 {
     spdlog::info("Building Wavelet Tree on integers");
     // create alphabet (phrases)

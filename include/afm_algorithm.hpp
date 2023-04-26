@@ -2,6 +2,9 @@
 //  afm_algorithm.hpp
 //
 
+#ifndef afm_algorith_hpp
+#define afm_algorith_hpp
+
 #include <sdsl/sd_vector.hpp>
 
 #include <parser.hpp>
@@ -43,3 +46,5 @@ public:
 };
 
 }
+
+#endif
