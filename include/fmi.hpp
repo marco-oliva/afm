@@ -57,22 +57,20 @@ namespace afm
 typedef uint64_t fmi_long_unsigned;
 typedef int64_t  fmi_long_signed;
 
+struct interval
+{
+    fmi_long_signed left, right;
+    fmi_long_signed size() { return right-left+1; }
+    bool operator==(const interval& rhs)
+    {
+        return (left == rhs.left) and (right == rhs.right);
+    }
+    
+};
+
 template<typename data_type, typename wt_type>
 class fmi
 {
-public:
-    
-    struct interval
-    {
-        fmi_long_signed left, right;
-        fmi_long_signed size() { return right-left+1; }
-        bool operator==(const interval& rhs)
-        {
-            return (left == rhs.left) and (right == rhs.right);
-        }
-        
-    };
-
 private:
     
     sdsl::int_vector<> sa;
