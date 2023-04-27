@@ -6,11 +6,11 @@
 
 
 //------------------------------------------------------------------------------
-afm::baseline_fmi::baseline_fmi(
+void
+afm::baseline_fmi::init(
 const vcfbwt::pfp::Params& params,
 vcfbwt::pfp::Dictionary<vcfbwt::char_type>& dictionary,
 const std::vector<vcfbwt::size_type>& parse)
-: parameters(params)
 {
     std::vector<vcfbwt::char_type> tmp_input;
     for (std::size_t i = 0; i < parse.size() - 1; i++)
@@ -39,11 +39,25 @@ afm::baseline_fmi::count(const std::vector<vcfbwt::char_type>& pattern) const
 }
 
 //------------------------------------------------------------------------------
-afm::accelerated_fmi::accelerated_fmi(
+void
+afm::accelerated_fmi::init(
 const vcfbwt::pfp::Params& params,
 vcfbwt::pfp::Dictionary<vcfbwt::char_type>& dictionary,
 const std::vector<vcfbwt::size_type>& parse)
-: parameters(params)
 { }
+
+std::vector<afm::fmi_long_unsigned>
+afm::accelerated_fmi::count(const std::vector<vcfbwt::char_type>& pattern) const
+{
+    return std::vector<afm::fmi_long_unsigned>();
+}
+
+std::vector<std::vector<afm::fmi_long_unsigned>>
+afm::accelerated_fmi::locate(const std::vector<vcfbwt::char_type>& pattern) const
+{
+    return std::vector<std::vector<afm::fmi_long_unsigned>>();
+}
+
+
 
 //------------------------------------------------------------------------------

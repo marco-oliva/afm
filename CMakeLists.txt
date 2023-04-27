@@ -10,8 +10,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(ENABLE_MALLOC_COUNT "Keep track of allocations with malloc_count."   OFF)
 option(ENABLE_MIMALLOC "Use mimalloc if installed."                         OFF)
-option(BUILD_TESTS "Build unit test."                                       OFF)
-option(BUILD_BENCHMARKS "Build benchmarks."                                 OFF)
+option(BUILD_TESTS "Build unit test."                                       ON)
+option(BUILD_BENCHMARKS "Build benchmarks."                                 ON)
 option(HTSlib_HIPERGATOR "Use hipergator default location for htslib."      OFF)
 option(HTSlib_CUSTOM "Use custom location for htslib."                      OFF)
 
@@ -141,6 +141,18 @@ FetchContent_GetProperties(Catch2)
 if (NOT Catch2_POPULATED AND (BUILD_TESTS OR ${CMAKE_BUILD_TYPE} MATCHES "Debug"))
     FetchContent_MakeAvailable(Catch2)
 endif()
+
+# Hayai Benchmarks
+FetchContent_Declare(
+        hayai
+        GIT_REPOSITORY https://github.com/nickbruun/hayai.git
+        GIT_TAG        v1.0.2
+)
+FetchContent_GetProperties(hayai)
+if(NOT hayai_POPULATED)
+    FetchContent_Populate(hayai)
+endif()
+include_directories(${hayai_SOURCE_DIR}/src)
 
 # SPDLOG
 FetchContent_Declare(
@@ -366,7 +378,8 @@ if (BUILD_BENCHMARKS OR ${CMAKE_BUILD_TYPE} MATCHES "Debug")
     message(STATUS "Building benchmarks")
 
     add_executable(afm_benchmarks benchmarks/benchmarks.cpp ${AFM_SOURCES})
-    target_link_libraries(afm_benchmarks pfp hayai sdsl divsufsort divsufsort64 gsacak64 ${AFM_LIBS})
+    add_dependencies(afm_benchmarks hayai)
+    target_link_libraries(afm_benchmarks pfp sdsl divsufsort divsufsort64 gsacak64 ${AFM_LIBS})
 endif()
 
 ################################################################################

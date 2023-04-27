@@ -178,11 +178,13 @@ public:
     
     std::vector<fmi_long_unsigned> locate(const std::vector<data_type>& p) const
     {
+        std::vector<fmi_long_unsigned> out;
+        
         interval I = search(p);
+        if (I == EMPTY_INTERVAL) { return out; }
         
-        std::vector<fmi_long_unsigned> out(I.size(), 0);
+        out.resize(I.size(), 0);
         for (std::size_t i = 0; i < I.size(); i++) { out[i] = sa[I.left + i]; }
-        
         return out;
     }
     
