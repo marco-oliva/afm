@@ -44,9 +44,9 @@ public:
 };
 
 
-BENCHMARK_F(basline_fmi_fixture, locate, 1, 50)
+BENCHMARK_F(basline_fmi_fixture, search, 1, 50)
 {
-    for (auto& pattern : queries) { bfmi.locate(pattern); }
+    for (auto& pattern : queries) { bfmi.search(pattern); }
 }
 
 //------------------------------------------------------------------------------
@@ -66,9 +66,9 @@ public:
 };
 
 
-BENCHMARK_F(accelerated_fmi_fixture, locate, 0, 0)
+BENCHMARK_F(accelerated_fmi_fixture, search, 1, 50)
 {
-    for (auto& pattern : queries) { afmi.locate(pattern); }
+    for (auto& pattern : queries) { afmi.search(pattern); }
 }
 
 //------------------------------------------------------------------------------
@@ -78,8 +78,8 @@ int main(int argc, char **argv)
     CLI::App app("AFM Benchmarks");
     
     std::string input_prefix;
-    std::size_t n_patterns = 1000;
-    std::size_t patterns_size = 100;
+    std::size_t n_patterns = 10000;
+    std::size_t patterns_size = 1000;
     
     app.add_option("-i,--input-prefix", input_prefix, "Input prefix of PFP.")->required();
     app.add_option("-w, --window-size", params.w, "Sliding window size.")->required()->check(CLI::Range(3, 200));

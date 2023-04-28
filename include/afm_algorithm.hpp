@@ -35,7 +35,7 @@ public:
     }
     
     afm::fmi_long_unsigned count(const std::vector<vcfbwt::char_type>& pattern) const;
-    std::vector<afm::fmi_long_unsigned> locate(const std::vector<vcfbwt::char_type>& pattern) const;
+    interval search(const std::vector<vcfbwt::char_type>& pattern) const;
 };
 
 class accelerated_fmi
@@ -43,10 +43,14 @@ class accelerated_fmi
 private:
     vcfbwt::pfp::Params parameters;
     
-    // bitvector
-    sdsl::sd_vector<> b_t;
-    typename sdsl::sd_vector<>::rank_1_type rank_b_p;
-    typename sdsl::sd_vector<>::select_1_type select_b_p;
+    vcfbwt::pfp::Dictionary<vcfbwt::char_type>* dictionary = nullptr;
+    
+    afm::fmi<vcfbwt::char_type, sdsl::wt_huff<>> fm_t;
+    afm::fmi<vcfbwt::size_type, afm::pfp_wt_sdsl> fm_p;
+    
+    sdsl::sd_vector<> ts_bitvector;
+    typename sdsl::sd_vector<>::rank_1_type rank_ts_bitvector;
+    typename sdsl::sd_vector<>::select_1_type select_ts_bitvector;
 
     void init(const vcfbwt::pfp::Params& params, vcfbwt::pfp::Dictionary<vcfbwt::char_type>& dictionary, const std::vector<vcfbwt::size_type>& parse);
 
@@ -63,8 +67,8 @@ public:
         this->init(params, dictionary, parse);
     }
     
-    std::vector<afm::fmi_long_unsigned> count(const std::vector<vcfbwt::char_type>& pattern) const;
-    std::vector<afm::fmi_long_unsigned> locate(const std::vector<vcfbwt::char_type>& pattern) const;
+    afm::fmi_long_unsigned count(const std::vector<vcfbwt::char_type>& pattern) const;
+    interval search(const std::vector<vcfbwt::char_type>& pattern) const;
 };
 
 }

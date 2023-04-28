@@ -97,7 +97,7 @@ public:
     }
 
 private:
-    sdsl::wt_int<> wt_i;
+    sdsl::wt_huff_int<> wt_i;
     std::vector<uint32_t> i_translate;
     std::vector<uint32_t> translate;
 };

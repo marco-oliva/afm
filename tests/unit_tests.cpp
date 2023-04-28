@@ -124,19 +124,6 @@ TEST_CASE("Test FM_Index integers", "[small]")
 }
 
 //------------------------------------------------------------------------------
-#include <afm_algorithm.hpp>
-
-TEST_CASE("Test AFM", "[small]")
-{
-    vcfbwt::pfp::Params params;
-    vcfbwt::pfp::Dictionary<vcfbwt::char_type> dict;
-    std::vector<vcfbwt::size_type> pars;
-    afm::accelerated_fmi my_fmi(params, dict, pars);
-    REQUIRE(true);
-}
-
-
-//------------------------------------------------------------------------------
 
 
 int main( int argc, char* argv[] )
