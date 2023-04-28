@@ -53,10 +53,10 @@ afm::accelerated_fmi::count(const std::vector<vcfbwt::char_type>& pattern) const
     return std::vector<afm::fmi_long_unsigned>();
 }
 
-std::vector<std::vector<afm::fmi_long_unsigned>>
+std::vector<afm::fmi_long_unsigned>
 afm::accelerated_fmi::locate(const std::vector<vcfbwt::char_type>& pattern) const
 {
-    return std::vector<std::vector<afm::fmi_long_unsigned>>();
+    return std::vector<afm::fmi_long_unsigned>();
 }
 
 

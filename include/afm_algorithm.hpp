@@ -64,7 +64,7 @@ public:
     }
     
     std::vector<afm::fmi_long_unsigned> count(const std::vector<vcfbwt::char_type>& pattern) const;
-    std::vector<std::vector<afm::fmi_long_unsigned>> locate(const std::vector<vcfbwt::char_type>& pattern) const;
+    std::vector<afm::fmi_long_unsigned> locate(const std::vector<vcfbwt::char_type>& pattern) const;
 };
 
 }
