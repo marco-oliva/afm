@@ -109,7 +109,6 @@ private:
         std::exit(EXIT_FAILURE);
     }
     
-    fmi_long_unsigned SA_at(fmi_long_unsigned i) const { return sa[i]; }
     fmi_long_unsigned C_array_at(data_type c) const { return C_array.at(c); }
     data_type bwt_at(fmi_long_unsigned i) const { return bwt[i]; }
     fmi_long_unsigned bwt_rank(fmi_long_unsigned i, data_type c) const { return bwt.rank(i, c); }
@@ -191,6 +190,7 @@ public:
     interval get_full_interval() const { return FULL_INTERVAL; };
     interval get_empty_interval() const { return EMPTY_INTERVAL; };
     fmi_long_unsigned size() const { return bwt.size(); }
+    fmi_long_unsigned SA_at(fmi_long_unsigned i) const { return sa[i]; }
     
 };
 
