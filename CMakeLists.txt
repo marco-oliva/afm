@@ -108,7 +108,7 @@ endif()
 FetchContent_Declare(
         pfp
         GIT_REPOSITORY https://github.com/marco-oliva/pfp.git
-        GIT_TAG        test_out_contigs_info
+        GIT_TAG        small_patch_dict_mutex
 )
 FetchContent_GetProperties(pfp)
 if(NOT pfp_POPULATED)
@@ -378,7 +378,6 @@ if (BUILD_BENCHMARKS OR ${CMAKE_BUILD_TYPE} MATCHES "Debug")
     message(STATUS "Building benchmarks")
 
     add_executable(afm_benchmarks benchmarks/benchmarks.cpp ${AFM_SOURCES})
-    add_dependencies(afm_benchmarks hayai)
     target_link_libraries(afm_benchmarks pfp sdsl divsufsort divsufsort64 gsacak64 ${AFM_LIBS})
 endif()
 

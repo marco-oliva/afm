@@ -16,12 +16,13 @@ const std::vector<vcfbwt::size_type>& parse)
     for (std::size_t i = 0; i < parse.size() - 1; i++)
     {
         auto& phrase_id = parse[i];
-        const std::vector<vcfbwt::char_type>& phrase = dictionary.sorted_entry_at(phrase_id);
+        auto& phrase = dictionary.sorted_entry_at(phrase_id - 1);
         
         tmp_input.insert(tmp_input.end(), phrase.begin(), phrase.end() - parameters.w);
     }
-    const std::vector<vcfbwt::char_type>& phrase = dictionary.sorted_entry_at(parse.back());
+    auto& phrase = dictionary.sorted_entry_at(parse.back() - 1);
     tmp_input.insert(tmp_input.end(), phrase.begin(), phrase.end()); // for the last phrase we need the last w characters
+    tmp_input.push_back(0);
     
     this->fmindex.construct(tmp_input);
 }
