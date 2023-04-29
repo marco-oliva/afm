@@ -12,6 +12,7 @@ const vcfbwt::pfp::Params& params,
 vcfbwt::pfp::Dictionary<vcfbwt::char_type>& dictionary,
 const std::vector<vcfbwt::size_type>& parse)
 {
+    this->parameters = params;
     std::vector<vcfbwt::char_type> tmp_input;
     for (std::size_t i = 0; i < parse.size() - 1; i++)
     {

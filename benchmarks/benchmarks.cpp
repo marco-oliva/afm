@@ -14,8 +14,8 @@
 
 bool file_exists(std::string path)
 {
-    struct stat64 stat_buf;
-    int rc = stat64(path.c_str(), &stat_buf);
+    struct stat stat_buf;
+    int rc = stat(path.c_str(), &stat_buf);
     return rc == 0;
 }
 
@@ -44,7 +44,7 @@ public:
 };
 
 
-BENCHMARK_F(basline_fmi_fixture, search, 1, 50)
+BENCHMARK_F(basline_fmi_fixture, search, 1, 10)
 {
     for (auto& pattern : queries) { bfmi.search(pattern); }
 }
@@ -66,7 +66,7 @@ public:
 };
 
 
-BENCHMARK_F(accelerated_fmi_fixture, search, 1, 50)
+BENCHMARK_F(accelerated_fmi_fixture, search, 1, 10)
 {
     for (auto& pattern : queries) { afmi.search(pattern); }
 }
@@ -78,14 +78,14 @@ int main(int argc, char **argv)
     CLI::App app("AFM Benchmarks");
     
     std::string input_prefix;
-    std::size_t n_patterns = 10000;
-    std::size_t patterns_size = 1000;
+    std::size_t n_patterns = 1000;
+    std::size_t patterns_size = 500;
     
     app.add_option("-i,--input-prefix", input_prefix, "Input prefix of PFP.")->required();
     app.add_option("-w, --window-size", params.w, "Sliding window size.")->required()->check(CLI::Range(3, 200));
     app.add_option("-p, --modulo", params.p, "Modulo used during parsing.")->required()->check(CLI::Range(5, 20000));
     app.add_option("-n, --patterns-number", n_patterns, "Number of patterns.");
-    app.add_option("-l, --patterns-length", n_patterns, "Length of the patterns.");
+    app.add_option("-l, --patterns-length", patterns_size, "Length of the patterns.");
     CLI11_PARSE(app, argc, argv);
     
     // Check all files needed
