@@ -122,16 +122,22 @@ int main(int argc, char **argv)
     spdlog::info("Generating {} patterns of length {}", n_patterns, patterns_size);
     std::random_device rd; // obtain a random number from hardware
     std::mt19937_64 gen(rd()); // seed the generator
-    std::uniform_int_distribution<> distr(1, tmp_input.size() - patterns_size - 1 - params.w); // define the range
+    std::size_t range_upper_bound = tmp_input.size() - patterns_size - params.w - 1;
+    spdlog::info("range_upper_bound: {}", range_upper_bound);
+    std::uniform_int_distribution<std::size_t> distr(1, range_upper_bound); // define the range
     
     for (std::size_t i = 0; i < n_patterns; i++)
     {
         std::size_t starting_position = distr(gen);
         std::vector<vcfbwt::char_type> pattern;
-        pattern.insert(pattern.end(),
-                       tmp_input.begin() + starting_position,
-                       tmp_input.begin() + starting_position + patterns_size);
+        pattern.resize(patterns_size);
+
+        pattern.resize(patterns_size);
+        std::copy(tmp_input.begin() + starting_position,
+                  tmp_input.begin() + starting_position + patterns_size,
+                  pattern.begin());
         queries.push_back(pattern);
+
     }
     
     spdlog::info("Starting Benchmarks");
