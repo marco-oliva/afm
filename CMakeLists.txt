@@ -8,7 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 ################################################################################
 # Options
 
-option(ENABLE_MALLOC_COUNT "Keep track of allocations with malloc_count."   OFF)
+option(ENABLE_MALLOC_COUNT "Keep track of allocations with malloc_count."   ON)
 option(ENABLE_MIMALLOC "Use mimalloc if installed."                         OFF)
 option(BUILD_TESTS "Build unit test."                                       ON)
 option(BUILD_BENCHMARKS "Build benchmarks."                                 ON)
@@ -18,7 +18,7 @@ option(HTSlib_CUSTOM "Use custom location for htslib."                      OFF)
 ################################################################################
 # Set a default build type if none was specified
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose Release or Debug"
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose Release or Debug"
 FORCE)
 endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
