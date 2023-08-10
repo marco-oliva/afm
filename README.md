@@ -18,6 +18,7 @@ singularity pull pfp_sif docker://moliva3/pfp:latest
 ```
 For more details, please refer to the PFP GitHub page.
 
+## Build the AFM
 Then we can build the afm by running the following commands:
 ```
 git clone https://github.com/marco-oliva/afm.git
