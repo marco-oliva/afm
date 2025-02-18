@@ -146,6 +146,37 @@ public:
 
         FULL_INTERVAL = {(fmi_long_signed)0, (fmi_long_signed)bwt.size()-1};
     }
+
+    void serialize_sa(const std::string& filename) const {
+        std::ofstream out(filename, std::ios::binary);
+        if (!out) {
+            throw std::runtime_error("Cannot open file to write sa: " + filename);
+        }
+        sa.serialize(out);
+        out.close();
+    }
+
+    void serialize_bwt(const std::string& filename) const {
+        std::ofstream out(filename, std::ios::binary);
+        if (!out) {
+            throw std::runtime_error("Cannot open file to write bwt: " + filename);
+        }
+        bwt.serialize(out);
+        out.close();
+    }
+
+    void serialize_C_array(const std::string& filename) const {
+        std::ofstream out(filename, std::ios::binary);
+        if (!out) {
+            throw std::runtime_error("Cannot open file to write C_array: " + filename);
+        }
+        size_t C_array_size = C_array.size();
+        out.write(reinterpret_cast<const char*>(&C_array_size), sizeof(C_array_size));
+        for (const auto& element : C_array) {
+            out.write(reinterpret_cast<const char*>(&element), sizeof(element));
+        }
+        out.close();
+    }
     
     interval left_extend(interval I, data_type c) const
     {
@@ -195,7 +226,7 @@ public:
 };
 
 template<>
-inline void fmi<vcfbwt::char_type, sdsl::wt_huff<>>::init_wt_bwt(const std::vector<vcfbwt::char_type>& input)
+inline void fmi<vcfbwt::char_type, sdsl::wt_rlmn<>>::init_wt_bwt(const std::vector<vcfbwt::char_type>& input)
 {
     spdlog::info("Building Wavelet Tree on chars");
     std::vector<vcfbwt::char_type> bwt_tmp(sa.size() + 1, 0); // has to be 0 terminated

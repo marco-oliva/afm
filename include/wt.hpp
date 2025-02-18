@@ -96,6 +96,11 @@ public:
         return wt_i.select(i, translate[c - 1]);
     }
 
+    void serialize(std::ostream& out) const {
+
+        wt_i.serialize(out);
+    }
+
 private:
     sdsl::wt_huff_int<> wt_i;
     std::vector<uint32_t> i_translate;

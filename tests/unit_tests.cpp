@@ -104,7 +104,7 @@ TEST_CASE( "Test Parser", "[small]" )
 TEST_CASE("Test FM_Index", "[small]")
 {
     std::vector<vcfbwt::char_type> s = {'A', 'C', 'G', 'T', 'T', 'C', 'C', 'A', 'A', 'C', 'G', 'T', 'A', 'T', 'A', 'C', 'G', 'G', 'G', 'T', '\0'};
-    afm::fmi<vcfbwt::char_type, sdsl::wt_huff<>> fmi(s);
+    afm::fmi<vcfbwt::char_type, sdsl::wt_rlmn<>> fmi(s);
 
     std::vector<vcfbwt::char_type> p_1 = {'G', 'T'};      REQUIRE(fmi.count(p_1) == 3);
     std::vector<vcfbwt::char_type> p_2 = {'G'};           REQUIRE(fmi.count(p_2) == 5);

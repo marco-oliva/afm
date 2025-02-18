@@ -4,22 +4,22 @@ project(afm)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-
+#include_directories(/usr/include/htslib)
 ################################################################################
 # Options
 
-option(ENABLE_MALLOC_COUNT "Keep track of allocations with malloc_count."   OFF)
+option(ENABLE_MALLOC_COUNT "Keep track of allocations with malloc_count."   ON)
 option(ENABLE_MIMALLOC "Use mimalloc if installed."                         OFF)
 option(BUILD_TESTS "Build unit test."                                       ON)
 option(BUILD_BENCHMARKS "Build benchmarks."                                 ON)
-option(HTSlib_HIPERGATOR "Use hipergator default location for htslib."      OFF)
+option(HTSlib_HIPERGATOR "Use hipergator default location for htslib."      ON)
 option(HTSlib_CUSTOM "Use custom location for htslib."                      OFF)
 
 ################################################################################
 # Set a default build type if none was specified
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose Release or Debug"
-FORCE)
+            FORCE)
 endif()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
@@ -73,14 +73,14 @@ include(FetchContent)
 # HTS
 message(HTSlib_HIPERGATOR)
 if(HTSlib_HIPERGATOR)
-    set(HTSlib_INCLUDE_DIRS "/apps/htslib/1.15/include/htslib")
-    set(HTSlib_LIBRARIES "/apps/htslib/1.15/lib/libhts.a")
-    set(LIBLZMA_LIBRARIES "/apps/cmake/3.21.3/lib/liblzma.so")
-    set(BZIP2_LIBRARIES "/apps/cmake/3.21.3/lib/libbz2.so")
-    set(ZLIB_LIBRARIES "/apps/cmake/3.21.3/lib/libz.so")
-    set(CURL_LIBRARIES "/apps/cmake/3.21.3/lib/libcurl.so")
-    set(CRYPTO_LIBRARIES "/apps/cmake/3.21.3/lib/libcrypto.so")
-    set(HPG_INCLUDES "/apps/cmake/3.21.3/include")
+    set(HTSlib_INCLUDE_DIRS "/apps/gcc/12.2.0/htslib/1.19/include/htslib")
+    set(HTSlib_LIBRARIES "/apps/gcc/12.2.0/htslib/1.19/lib/libhts.a")
+    set(LIBLZMA_LIBRARIES "/apps/cmake/3.26.4/lib/liblzma.so")
+    set(BZIP2_LIBRARIES "/apps/cmake/3.26.4/lib/libbz2.so")
+    set(ZLIB_LIBRARIES "/apps/cmake/3.26.4/lib/libz.so")
+    set(CURL_LIBRARIES "/apps/cmake/3.26.4/lib/libcurl.so")
+    set(CRYPTO_LIBRARIES "/apps/cmake/3.26.4/lib/libcrypto.so")
+    set(HPG_INCLUDES "/apps/cmake/3.26.4/include")
     set(HTSlib_INCLUDE_DIRS ${HTSlib_INCLUDE_DIRS} ${HPG_INCLUDES})
     set(HTSlib_LIBRARIES ${HTSlib_LIBRARIES} ${LIBLZMA_LIBRARIES} ${BZIP2_LIBRARIES} ${ZLIB_LIBRARIES} ${CURL_LIBRARIES} ${CRYPTO_LIBRARIES})
     include_directories(${HTSlib_INCLUDE_DIRS})
@@ -384,15 +384,15 @@ endif()
 ################################################################################
 # Targets
 
-file(GLOB SOURCES_GENERATED ${PROJECT_BINARY_DIR}/generated/*.cpp)
+#file(GLOB SOURCES_GENERATED ${PROJECT_BINARY_DIR}/generated/*.cpp)
 
-add_executable(afmt afm.cpp ${AFM_SOURCES})
-target_link_libraries(afmt dl pfp sdsl divsufsort divsufsort64 gsacak64 ${AFM_LIBS})
+#add_executable(afmt afm.cpp ${AFM_SOURCES})
+#target_link_libraries(afmt dl pfp sdsl divsufsort divsufsort64 gsacak64 ${AFM_LIBS})
 
 ################################################################################
 # Install
 
-install(TARGETS afmt)
+#install(TARGETS afmt)
 
 ################################################################################
 # CPack
